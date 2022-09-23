@@ -1,0 +1,16 @@
+<p>Upload new File:
+    {% block body %}
+        {% with messages = get_flashed_messages
+                        (category_filter="uploads") %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    {% endblock %}
+</p>
+<form method=post enctype=multipart/form-data>
+<input type=file name=file>
+<input type=submit value=Upload>
+</form>

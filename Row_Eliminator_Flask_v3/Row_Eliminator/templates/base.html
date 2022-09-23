@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+    <head>
+        <title>
+            Row Eliminator - {{ title }}
+        </title>
+        <style>
+            h1 {
+                stroke: darkgoldenrod;
+                text-align: center;
+                font-size: xxx-large;
+                color: papayawhip;
+            }
+            h1 span {
+                background-color: #43d9cf;
+            }
+            .container {
+                text-align: center;
+            }
+            .nav_spc {
+                display: flex;
+                justify-content: space-between;
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 10px 0;
+            }
+            h2 {
+                display: inline-grid;
+                margin: auto;
+                justify-items: center;
+                justify-content: center;
+                font-size: 24px;
+                color: black;
+                }
+            body {background-image: url(./static/test_bg.jpg);
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: 100% 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="nav_spc">
+            <a href="/"><span>About</span></a>
+            <a href="/app"><span>General Use</span></a>
+            <a href="/"><span>Hydrocorp</span></a>
+            </div>
+            <!-- responsive-->
+<!--            <input id="bmenub" type="checkbox" class="show">-->
+<!--            <label for="bmenub" class="burger pseudo button">Menu</label>-->
+<!--            <div class="menu">-->
+<!--                <a href="/update" class="button warning">Update Tweets</a>-->
+<!--                <a href="/reset" class="button error">Reset Database</a>-->
+<!--      </div>-->
+    </nav>
+        <h1>
+            <span> Row Eliminator:
+            </span>
+        </h1>
+        <h2><div class="container"></div></h2>
+    </body>
+</html>
+

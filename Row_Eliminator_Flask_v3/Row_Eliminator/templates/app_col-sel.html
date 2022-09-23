@@ -1,0 +1,25 @@
+<p>Please Select Columns with Offending Values:
+    {% block body %}
+        {% with messages = get_flashed_messages
+                        (category_filter="file_read") %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+</p>
+<form id="cols" method="post" enctype=multipart/form-data>
+    <select name="cols_submit" size="10" multiple>
+        {% with messages = get_flashed_messages
+                        (category_filter="cols") %}
+                    {% for message in messages %}
+                        <option>
+                            {{ message }}
+                        </option>
+                    {% endfor %}
+        {% endwith %}
+        <input type=submit value=submit>
+    </select>
+</form>
+{% endblock %}
