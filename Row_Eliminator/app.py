@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, \
     flash, session, request, send_from_directory, \
     url_for, send_file
 from werkzeug.utils import secure_filename
-import functions as func
+from . import functions as func
 import os
 import pandas as pd
 from flask import send_file
