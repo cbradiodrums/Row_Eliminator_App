@@ -39,20 +39,31 @@ def upload_file():
 
 
 #  Read in the Uploaded File
-def read_db(db_file):  # Reads the file into pandas
+def read_db(db_file: str) -> pd.DataFrame:
+    """Reads the file into pandas
+
+    Args:
+        db_file (str): File to load into Pandas dataframe
+
+    Returns:
+        pd.DataFrame
+    """
     if allowed_file(db_file)[1] == 'csv':
-        return pd.read_csv(db_file), \
-               flash(".csv read!", 'file_read')
+        return pd.read_csv(db_file)
     elif allowed_file(db_file)[1] == 'xls':
-        return pd.read_excel(db_file), \
-               flash(".xls read!", 'file_read')
-    else:
-        flash("[Read File] Failed!",
-              'file_read')
+        return pd.read_excel(db_file)
 
 
 #  Define and Display Columns for user selection
 def def_cols(df):
+    """Define and Display Columns for user selection
+
+    Args:
+        df (pd.DataFrame): _description_
+
+    Returns:
+        list: _description_
+    """
     # -- Select all columns that have offensive values: --
     victor_df, elim_df, col_sel = df.copy(), df.copy(), []
     for i in range(len(df.columns)):
