@@ -15,7 +15,7 @@ from zipfile import ZipFile
 app = Flask(__name__)
 app_title = 'Row Eliminator'
 
-UPLOAD_FOLDER = './static/uploads/'
+UPLOAD_FOLDER = './uploads/'
 TEMPLATES_AUTO_RELOAD = True
 ALLOWED_EXTENSIONS = {'csv', 'xls'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
