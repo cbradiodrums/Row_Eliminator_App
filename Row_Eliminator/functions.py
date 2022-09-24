@@ -1,10 +1,9 @@
 # Functions for the Row Eliminator Site
-from flask import Flask, render_template, \
-    flash, request
+from flask import flash, request
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from app import app
+from . import app
 
 ALLOWED_EXTENSIONS = {'csv', 'xls'}
 
