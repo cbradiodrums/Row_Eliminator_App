@@ -1,21 +1,15 @@
-from flask import Flask, render_template, redirect, \
-    flash, request, url_for
-from Row_Eliminator import functions as func
-import os
+"""Main driver for Flask app"""
+
+from pathlib import Path
+from flask import Flask, render_template, redirect, flash, request, url_for
 import pandas as pd
-from flask import send_file
-from glob import glob
-from io import BytesIO
-from zipfile import ZipFile
+from Row_Eliminator import config, files, functions
 
 
 app = Flask(__name__)
 app_title = 'Row Eliminator'
 
-UPLOAD_FOLDER = './uploads/'
-TEMPLATES_AUTO_RELOAD = True
-ALLOWED_EXTENSIONS = {'csv', 'xls'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'DEV'
 db_read, db_cols = None, None
 
@@ -29,11 +23,11 @@ def create_app():
     def general_use():
         # ToDo: Refactor function and move to separate file
         global db_read, db_cols
-        current_db = func.upload_file()
+        current_db = files.upload_file()
         if current_db is not None:
-            db_read = func.read_db(str(current_db[1]))
+            db_read = functions.read_db(str(current_db[1]))
         if db_read is not None:
-            db_cols = func.def_cols(db_read[0])
+            db_cols = functions.def_cols(db_read[0])
         cols_submit = request.form.getlist('cols_submit')
         enu_cols = [col[1] for col in cols_submit]
         if len(cols_submit) > 0:
@@ -64,9 +58,9 @@ def create_app():
             result = f"{len(elim_df)} Rows Eliminated!! \
              {len(victor_df)} Remaining from initial {len(db_read[0])}!!"
             flash(result, "error")
-            victor_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_victor.csv'))
-            elim_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_elim.csv'))
-            return redirect(url_for('download'))  # Download Clause
+            victor_df.to_csv(app.config['UPLOAD_FOLDER'] / 'temp_victor.csv')
+            elim_df.to_csv(app.config['UPLOAD_FOLDER'] / 'temp_elim.csv')
+            return redirect(url_for('download'))
 
         return render_template('app.html', title='General Use')
 
@@ -76,20 +70,7 @@ def create_app():
 
     @app.route('/download')
     def download():
-        # ToDo: Move upload functionality to functions.py
-        # target = 'dir1/dir2'
-
-        stream = BytesIO()
-        with ZipFile(stream, 'w') as zf:
-            for file in glob(os.path.join(app.config['UPLOAD_FOLDER'], '*.csv')):
-                zf.write(file, os.path.basename(file))
-        stream.seek(0)
-
-        return send_file(
-            stream,
-            as_attachment=True,
-            download_name='archive.zip'
-        )
+        return files.download_file()
 
     @app.route('/reset')
     def reset():
