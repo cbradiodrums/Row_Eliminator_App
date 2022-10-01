@@ -27,6 +27,7 @@ def create_app():
 
     @app.route('/app', methods=['GET', 'POST'])
     def general_use():
+        # ToDo: Refactor function and move to separate file
         global db_read, db_cols
         current_db = func.upload_file()
         if current_db is not None:
@@ -75,6 +76,7 @@ def create_app():
 
     @app.route('/download')
     def download():
+        # ToDo: Move upload functionality to functions.py
         # target = 'dir1/dir2'
 
         stream = BytesIO()

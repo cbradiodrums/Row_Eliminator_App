@@ -5,26 +5,21 @@ import os
 import pandas as pd
 from Row_Eliminator import app
 
+# ToDo: Consolidate ALLOWED_EXTENSIONS into one central location
 ALLOWED_EXTENSIONS = {'csv', 'xls'}
 
 
 # Check if Allowed File extension
-def allowed_file(filename):
-    """Check if file matches filetype criteria
-
-    Args:
-        filename (str): path to file
-
-    Returns:
-        bool
-    """
+def allowed_file(filename: str) -> bool:
+    """Check if file matches filetype criteria"""
+    # ToDo: Refactor to return only bool
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS, \
            filename.rsplit('.', 1)[1].lower()
 
 
 # Upload File Function
-def upload_file():
+def upload_file() -> None:
     """Retrieve uploaded file from POST and save to uploads directory"""
     if request.method == 'POST':
         # check if the post request has the file part
@@ -48,14 +43,7 @@ def upload_file():
 
 #  Read in the Uploaded File
 def read_db(db_file: str) -> pd.DataFrame:
-    """Reads the file into pandas
-
-    Args:
-        db_file (str): File to load into Pandas dataframe
-
-    Returns:
-        pd.DataFrame
-    """
+    """Reads the file into pandas"""
 
     if allowed_file(db_file)[1] == 'csv':
         return pd.read_csv(db_file)  # , flash(".csv read!", 'file_read')
@@ -66,15 +54,8 @@ def read_db(db_file: str) -> pd.DataFrame:
 
 
 #  Define and Display Columns for user selection
-def def_cols(df):
-    """Define and Display Columns for user selection
-
-    Args:
-        df (pd.DataFrame): _description_
-
-    Returns:
-        list: _description_
-    """
+def def_cols(df) -> list:
+    """Define and Display Columns for user selection"""
     # -- Select all columns that have offensive values: --
     victor_df, elim_df, col_sel = df.copy(), df.copy(), []
     for i in range(len(df.columns)):
