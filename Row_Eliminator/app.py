@@ -1,15 +1,12 @@
 from flask import Flask, render_template, redirect, \
-    flash, session, request, send_from_directory, \
-    url_for, send_file
-from werkzeug.utils import secure_filename
-from . import functions as func
+    flash, request, url_for
+from Row_Eliminator import functions as func
 import os
 import pandas as pd
 from flask import send_file
 from glob import glob
 from io import BytesIO
 from zipfile import ZipFile
-
 
 
 app = Flask(__name__)
@@ -21,6 +18,7 @@ ALLOWED_EXTENSIONS = {'csv', 'xls'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'DEV'
 db_read, db_cols = None, None
+
 
 def create_app():
     @app.route('/')
@@ -49,7 +47,7 @@ def create_app():
             off_vals = {}
             for ov in off_vals_form:
                 off_vals[ov[ov.find("[")+1:ov.find("]")]] = \
-                ov[ov.find('<')+1:ov.find('>')]
+                    ov[ov.find('<')+1:ov.find('>')]
             victor_df, elim_df = db_read[0].copy(), db_read[0].copy()
             for col in off_vals:
                 for val in off_vals[col]:
@@ -67,10 +65,9 @@ def create_app():
             flash(result, "error")
             victor_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_victor.csv'))
             elim_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_elim.csv'))
-            return redirect(url_for('download')) # Download Clause
+            return redirect(url_for('download'))  # Download Clause
 
         return render_template('app.html', title='General Use')
-
 
     @app.route('/hydrocorp')  # Specifically for Hydrocorp functions
     def hydrocorp():
@@ -92,6 +89,7 @@ def create_app():
             download_name='archive.zip'
         )
 
+    @app.route('/reset')
     def reset():
         return redirect(url_for('app'))
 

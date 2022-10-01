@@ -3,7 +3,7 @@ from flask import flash, request
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from . import app
+from Row_Eliminator import app
 
 ALLOWED_EXTENSIONS = {'csv', 'xls'}
 
@@ -39,11 +39,10 @@ def upload_file():
             s_filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], s_filename))
             return flash('File Uploaded', 'uploads'), \
-                   os.path.join(app.config['UPLOAD_FOLDER'], s_filename)
+                os.path.join(app.config['UPLOAD_FOLDER'], s_filename)
         elif not allowed_file(file.filename)[0]:
-            return flash(f'''Supported File Types: \
-            {[str(i).strip('') for i in ALLOWED_EXTENSIONS]}''' \
-                         , 'uploads')
+            return flash(f'''Supported File Types: 
+            {[str(i).strip('') for i in ALLOWED_EXTENSIONS]}''', 'uploads')
     flash('', 'uploads')
 
 
@@ -59,14 +58,11 @@ def read_db(db_file: str) -> pd.DataFrame:
     """
 
     if allowed_file(db_file)[1] == 'csv':
-        return pd.read_csv(db_file)#, \
-               #flash(".csv read!", 'file_read')
+        return pd.read_csv(db_file)  # , flash(".csv read!", 'file_read')
     elif allowed_file(db_file)[1] == 'xls':
-        return pd.read_excel(db_file)#, \
-               #flash(".xls read!", 'file_read')
+        return pd.read_excel(db_file)  # , flash(".xls read!", 'file_read')
     else:
-        flash("[Read File] Failed!",
-              'file_read')
+        flash("[Read File] Failed!", 'file_read')
 
 
 #  Define and Display Columns for user selection
@@ -83,8 +79,8 @@ def def_cols(df):
     victor_df, elim_df, col_sel = df.copy(), df.copy(), []
     for i in range(len(df.columns)):
         if len(df) > df[df.columns[i]].nunique() > 1:
-            x = f'[{i}]{df.columns[i]} -- ' \
-                f'{df[df.columns[i]].nunique()} Unique Values!'
+            x = f'[{i}]{df.columns[i]} -- {df[df.columns[i]].nunique()} ' \
+                f'Unique Values!'
             col_sel.append(x)
             flash(x, 'cols')
     return [i for i in col_sel]
