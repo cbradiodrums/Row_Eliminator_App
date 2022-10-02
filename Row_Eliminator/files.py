@@ -46,5 +46,3 @@ def load_file(filepath: Path) -> pd.DataFrame:
         return pd.read_csv(filepath)
     elif filepath.suffix == 'xls':
         return pd.read_excel(filepath)
-    else:
-        return pd.DataFrame()
