@@ -3,28 +3,23 @@ from flask import flash, request
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from . import app
+from Row_Eliminator import app
 
+# ToDo: Consolidate ALLOWED_EXTENSIONS into one central location
 ALLOWED_EXTENSIONS = {'csv', 'xls'}
 
 
 # Check if Allowed File extension
-def allowed_file(filename):
-    """Check if file matches filetype criteria
-
-    Args:
-        filename (str): path to file
-
-    Returns:
-        bool
-    """
+def allowed_file(filename: str) -> bool:
+    """Check if file matches filetype criteria"""
+    # ToDo: Refactor to return only bool
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS, \
            filename.rsplit('.', 1)[1].lower()
 
 
 # Upload File Function
-def upload_file():
+def upload_file() -> None:
     """Retrieve uploaded file from POST and save to uploads directory"""
     if request.method == 'POST':
         # check if the post request has the file part
@@ -39,52 +34,34 @@ def upload_file():
             s_filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], s_filename))
             return flash('File Uploaded', 'uploads'), \
-                   os.path.join(app.config['UPLOAD_FOLDER'], s_filename)
+                os.path.join(app.config['UPLOAD_FOLDER'], s_filename)
         elif not allowed_file(file.filename)[0]:
-            return flash(f'''Supported File Types: \
-            {[str(i).strip('') for i in ALLOWED_EXTENSIONS]}''' \
-                         , 'uploads')
+            return flash(f'''Supported File Types: 
+            {[str(i).strip('') for i in ALLOWED_EXTENSIONS]}''', 'uploads')
     flash('', 'uploads')
 
 
 #  Read in the Uploaded File
 def read_db(db_file: str) -> pd.DataFrame:
-    """Reads the file into pandas
-
-    Args:
-        db_file (str): File to load into Pandas dataframe
-
-    Returns:
-        pd.DataFrame
-    """
+    """Reads the file into pandas"""
 
     if allowed_file(db_file)[1] == 'csv':
-        return pd.read_csv(db_file)#, \
-               #flash(".csv read!", 'file_read')
+        return pd.read_csv(db_file)  # , flash(".csv read!", 'file_read')
     elif allowed_file(db_file)[1] == 'xls':
-        return pd.read_excel(db_file)#, \
-               #flash(".xls read!", 'file_read')
+        return pd.read_excel(db_file)  # , flash(".xls read!", 'file_read')
     else:
-        flash("[Read File] Failed!",
-              'file_read')
+        flash("[Read File] Failed!", 'file_read')
 
 
 #  Define and Display Columns for user selection
-def def_cols(df):
-    """Define and Display Columns for user selection
-
-    Args:
-        df (pd.DataFrame): _description_
-
-    Returns:
-        list: _description_
-    """
+def def_cols(df) -> list:
+    """Define and Display Columns for user selection"""
     # -- Select all columns that have offensive values: --
     victor_df, elim_df, col_sel = df.copy(), df.copy(), []
     for i in range(len(df.columns)):
         if len(df) > df[df.columns[i]].nunique() > 1:
-            x = f'[{i}]{df.columns[i]} -- ' \
-                f'{df[df.columns[i]].nunique()} Unique Values!'
+            x = f'[{i}]{df.columns[i]} -- {df[df.columns[i]].nunique()} ' \
+                f'Unique Values!'
             col_sel.append(x)
             flash(x, 'cols')
     return [i for i in col_sel]
