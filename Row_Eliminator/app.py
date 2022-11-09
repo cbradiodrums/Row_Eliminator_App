@@ -1,23 +1,24 @@
+# Row Eliminator App Driver
 from flask import Flask, render_template, redirect, \
-    flash, request, url_for
-from Row_Eliminator import functions as func
+    request, url_for, send_file
+import functions as func
 import os
-import pandas as pd
-from flask import send_file
 from glob import glob
 from io import BytesIO
 from zipfile import ZipFile
 
-
 app = Flask(__name__)
 app_title = 'Row Eliminator'
 
-UPLOAD_FOLDER = './uploads/'
+UPLOAD_FOLDER = './static/uploads/'
 TEMPLATES_AUTO_RELOAD = True
-ALLOWED_EXTENSIONS = {'csv', 'xls'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'DEV'
-db_read, db_cols = None, None
+
+# Instantiate Empty Files
+# test = None
+user_file, db_read, db_cols = None, None, None
+cols_submit, values_submit = [], []
 
 
 def create_app():
@@ -27,45 +28,47 @@ def create_app():
 
     @app.route('/app', methods=['GET', 'POST'])
     def general_use():
-        # ToDo: Refactor function and move to separate file
-        global db_read, db_cols
-        current_db = func.upload_file()
-        if current_db is not None:
-            db_read = func.read_db(str(current_db[1]))
+        """ -- Constant Page Refresh Function --
+            User Input: Valid .csv or .xls spreadsheet
+            Page Display: 1): Columns within User's spreadsheet
+                          2) Offending Values within User's Column Selection
+            Page Output: 1) Spreadsheet with only offending value rows
+                         2) User's Spreadsheet with offending value rows removed """
+
+        # Instantiate Global Variables
+        global user_file, db_read, db_cols, \
+            cols_submit, values_submit
+        page_output = False
+
+        # Determine if User uploaded a valid spreadsheet file
+        user_file = func.upload_file()
+        if user_file is not None:
+            db_read = func.read_db(user_file)
+
+        # Page Display: 1): Columns within User's spreadsheet
         if db_read is not None:
-            db_cols = func.def_cols(db_read[0])
-        cols_submit = request.form.getlist('cols_submit')
-        enu_cols = [col[1] for col in cols_submit]
+            db_cols = func.def_cols(db_read)
+
+        # Page Display: 2) All Values within User's Column Selection
+        if len(cols_submit) == 0:
+            cols_submit = request.form.getlist('cols_submit')
         if len(cols_submit) > 0:
-            for col in enu_cols:
-                flash(db_read[0].columns[int(col)], "message")
-                for val in range(len(db_read[0][db_read[0].columns[int(col)]].unique())):
-                    message = f'[{col}] {db_read[0].columns[int(col)]}' \
-                              f' - <{val}> {db_read[0][db_read[0].columns[int(col)]].unique()[val]}'
-                    flash(message, "val")
-        off_vals_form = request.form.getlist('off_vals')
-        if len(off_vals_form) > 0:
-            off_vals = {}
-            for ov in off_vals_form:
-                off_vals[ov[ov.find("[")+1:ov.find("]")]] = \
-                    ov[ov.find('<')+1:ov.find('>')]
-            victor_df, elim_df = db_read[0].copy(), db_read[0].copy()
-            for col in off_vals:
-                for val in off_vals[col]:
-                    df_drop = db_read[0][db_read[0][db_read[0].columns[int(col)]]
-                                         == db_read[0][db_read[0].columns[int(col)]].unique()[int(val)]]
-                    victor_df = (pd.merge(victor_df, df_drop, indicator=True, how='outer')
-                                 .query('_merge=="left_only"')
-                                 .drop('_merge', axis=1))
-                    # df_drop.to_csv(f"./Test_Files/f{val}.csv") #  Incremental Export
-            elim_df = (pd.merge(elim_df, victor_df, indicator=True, how='outer')
-                       .query('_merge=="left_only"')
-                       .drop('_merge', axis=1))
-            result = f"{len(elim_df)} Rows Eliminated!! \
-             {len(victor_df)} Remaining from initial {len(db_read[0])}!!"
-            flash(result, "error")
-            victor_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_victor.csv'))
-            elim_df.to_csv(os.path.join(app.config['UPLOAD_FOLDER'], 'temp_elim.csv'))
+            func.def_values(db_read, cols_submit)
+
+        # User selects Offending Values to return Page Output #1 and #2:
+        if len(values_submit) == 0:
+            values_submit = request.form.getlist('off_values')
+        if len(values_submit) > 0:
+            page_output = func.row_eliminator_general(db_read, values_submit)
+
+        # Verify Print Block
+        print(f'user_file: {user_file}\n '
+              f'db_read: {db_read}\n db_cols: {db_cols}\n'
+              f'cols_submit: {cols_submit}, values_submit: {values_submit}\n'
+              f'page_output: {page_output}\n')
+
+        if page_output:
+            # Redirect User to Download Page
             return redirect(url_for('download'))  # Download Clause
 
         return render_template('app.html', title='General Use')
@@ -76,7 +79,6 @@ def create_app():
 
     @app.route('/download')
     def download():
-        # ToDo: Move upload functionality to functions.py
         # target = 'dir1/dir2'
 
         stream = BytesIO()
@@ -91,7 +93,6 @@ def create_app():
             download_name='archive.zip'
         )
 
-    @app.route('/reset')
     def reset():
         return redirect(url_for('app'))
 
