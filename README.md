@@ -1,4 +1,4 @@
-# Row Eliminator App
+# Row Eliminator App ( In Development )
 [![Pylint](https://github.com/cbradiodrums/Row_Eliminator_App/actions/workflows/pylint.yml/badge.svg)](https://github.com/cbradiodrums/Row_Eliminator_App/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/cbradiodrums/Row_Eliminator_App/actions/workflows/pytest.yml/badge.svg)](https://github.com/cbradiodrums/Row_Eliminator_App/actions/workflows/pytest.yml)
 - <b>Objective</b>: 
