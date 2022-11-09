@@ -17,7 +17,7 @@
 - <b>Language</b>: Python
 - <b>License</b>: GNU
 - <b>Filetype(s)</b>: .PY, .HTML, .XLS, & .CSV
-- <b>Video Demo</b>: https://www.loom.com/share/32189e34fe4c48d6bceacd94ca62b0e5
+- <b>Video Demo</b>:  [![LOOM]([https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0](https://www.loom.com/share/32189e34fe4c48d6bceacd94ca62b0e5).jpg)]([https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE](https://www.loom.com/share/32189e34fe4c48d6bceacd94ca62b0e5))
 ---
 ### Contributor(s):
 - Chris Burrows (<i> Technical Project Manager)</i>
