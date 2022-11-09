@@ -20,8 +20,8 @@
 - <b>Video Demo</b>: https://youtu.be/34_J4UfoAKA
 ---
 ### Contributor(s):
-- Chris Burrows (<i> Technical Project Manager)
-- Randy Nance (<i> Test Suite Designer / Peer Review)
+- Chris Burrows (<i> Technical Project Manager)</i>
+- Randy Nance (<i> Test Suite Designer / Peer Review)</i>
 ---
 ### Contents:
 #### app.py:
