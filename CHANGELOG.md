@@ -37,6 +37,8 @@
      6. Odd Character / Whitespace Columns
      7. Disjointed Column Names
      8. Special Characters / Digits
+     9. Multiple Columns Selected
+     10. Multiple Offending Values Selected
   4. Monthly calculator works correctly
 ---
 ### Patch / Changelog:
